@@ -3,13 +3,14 @@ const UserService = require("../services/user.service");
 const sequelize = require("../database/sequelize")
 const service = new UserService(sequelize);
 
-async function createUser(req = request, res = response) {
+async function createUser(req = request, res = response, next) {
   try {
     const user = await service.create(req.body);
     
     res.status(201).json(user);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    next(error)
+    //res.status(400).json({ message: error.message });
   }
 }
 
