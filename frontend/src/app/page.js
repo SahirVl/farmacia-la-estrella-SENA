@@ -14,7 +14,7 @@ export default function App() {
 
   return (
     <div className="font-sans">
-      <Navbar />
+      
       <Header />
       <SearchBar search={search} onSearch={setSearch} />
       <ProductCarousel search={search} />
