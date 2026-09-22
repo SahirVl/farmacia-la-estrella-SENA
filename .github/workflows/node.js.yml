@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.17.1]
+        node-version: [22.x, 24.x]   # Node 20 ya no se recomienda
 
     steps:
       - uses: actions/checkout@v4
@@ -29,22 +29,22 @@ jobs:
       - name: Backend install & build
         run: |
           cd backend
-          npm ci
+          npm install   # usa npm install si no tienes lockfile
           npm run build --if-present
           npm test
 
-      # Frontend (Interfaz)
+      # Frontend
       - name: Frontend install & build
         run: |
           cd Interfaz
-          npm ci
+          npm install
           npm run build --if-present
           npm test
 
-      # Electron modules
+      # Electron
       - name: Electron install & build
         run: |
           cd módulos_de_escritorio_electron
-          npm ci
+          npm install
           npm run build --if-present
           npm test
