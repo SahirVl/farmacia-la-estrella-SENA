@@ -36,7 +36,7 @@ jobs:
       # Frontend (Interfaz)
       - name: Frontend install & build
         run: |
-          cd Interfaz
+          cd frontend
           npm install
           npm run build --if-present
           npm test
@@ -44,7 +44,7 @@ jobs:
       # Electron modules
       - name: Electron install & build
         run: |
-          cd módulos_de_escritorio_electron
+          cd desktop_modules_electron
           npm install
           npm run build --if-present
           npm test
