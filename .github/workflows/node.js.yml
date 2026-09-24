@@ -1,50 +1,67 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: Node.js CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        node-version: [22.x, 24.x]   # Node 20 está deprecado
+        node-version:
+          - 22.x
+          - 24.x
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+            desktop_modules_electron/package-lock.json
+
+      - name: Verify package-lock files
+        run: |
+          echo "Buscando package-lock.json..."
+          find . -name "package-lock.json"
 
       # Backend
-      - name: Backend install & build
+      - name: Backend install, build and test
         run: |
           cd backend
-          npm install
+          npm ci
           npm run build --if-present
-          npm test
+          npm run test --if-present
 
-      # Frontend (Interfaz)
-      - name: Frontend install & build
+      # Frontend (Next.js)
+      - name: Frontend install, lint, build and test
         run: |
-          cd Interfaz
-          npm install
+          cd frontend
+          npm ci
+          npm run lint --if-present
           npm run build --if-present
-          npm test
+          npm run test --if-present
 
-      # Electron modules
-      - name: Electron install & build
+      # Electron
+      - name: Electron install, build and test
         run: |
-          cd módulos_de_escritorio_electron
-          npm install
+          cd desktop_modules_electron
+          npm ci
+          npm run lint --if-present
           npm run build --if-present
-          npm test
+          npm run test --if-present
