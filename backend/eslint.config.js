@@ -17,7 +17,7 @@ module.exports = [
             prettier: eslintPluginPrettier,
         },
         rules: {
-            "no-console": "warn",
+            "no-console": "off",
             "prettier/prettier": "error",
         },
     },
