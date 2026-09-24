@@ -1,8 +1,7 @@
-// src/__test__/user.controller.test.js
 const { createUser, userList, updateUser } = require("../controllers/user.controller");
 const UserService = require("../services/user.service");
 
-// Mockear el servicio completo
+// Mockear el servicio
 jest.mock("../services/user.service");
 
 describe("UserController", () => {
@@ -13,7 +12,7 @@ describe("UserController", () => {
     res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
     next = jest.fn();
 
-    // Configurar mocks
+    // Configurar mocks para cada método
     UserService.prototype.create = jest.fn().mockResolvedValue(req.body);
     UserService.prototype.find = jest.fn().mockResolvedValue([{ id: 1, email: "test@test.com" }]);
     UserService.prototype.update = jest.fn().mockResolvedValue({ id: 1, email: "nuevo@test.com" });
