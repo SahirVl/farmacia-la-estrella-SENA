@@ -1,20 +1,32 @@
-const sequelize = require("../database/sequelize");
 const AuthService = require("../services/auth.service");
-const service = new AuthService(sequelize);
+const { generarToken } = require("../auth/jwt");
+const service = new AuthService();
 
-async function loginController(req, res, next) {
+async function login(req, res) {
     const { email, password } = req.body;
     try {
-        const user = await service.validateUser(email, password);
-        req.session.user = {
-            id: user.id,
-            name: user.fullName,
-            email: user.email,
-            role: user.role,
-        };
-        res.status(200).json(user);
+        const result = await service.validateUser(email, password);
+
+        if (!result.success) {
+            return res.status(401).json({
+                error: "Acceso denegado",
+                message: result.message || "Valida tus credenciales",
+            });
+        }
+
+        const token = generarToken(result.user);
+
+        res.status(200).json({
+            token,
+            user: result.user,
+        });
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        console.error("Error inesperado en login:", err);
+        res.status(500).json({
+            error: "Error interno del servidor",
+            message:
+                "Ocurrió un problema inesperado. Por favor intenta más tarde.",
+        });
     }
 }
 
@@ -26,4 +38,4 @@ function logoutController(req, res) {
     });
 }
 
-module.exports = { loginController, logoutController };
+module.exports = { logoutController, login };

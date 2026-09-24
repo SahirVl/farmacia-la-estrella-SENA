@@ -1,10 +1,9 @@
-const { Category } = require('../models/category.model')
-
+const { Category } = require("../models/category.model");
 
 class CategoryService {
     async createCategory(data) {
-        const product =  await Category.create(data)
-        return product
+        const product = await Category.create(data);
+        return product;
     }
 }
-module.exports = CategoryService
+module.exports = CategoryService;
